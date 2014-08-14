@@ -3,7 +3,7 @@
  * Plugin Name: Teka Files
  * Plugin URI: http://github.com/foxrock/tekafiles
  * Description: Teka file administrator.
- * Version: 1.0
+ * Version: 1.1
  * Author: Andres Londono
  * Author URI: http://www.foxrock.co
  * License: GPL2

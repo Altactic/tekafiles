@@ -63,10 +63,10 @@ function tekafiles_update_db_check() {
 }
 
 function tekafiles_deactivate () {
-  global $wpdb;
-  $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekafile" );
-  $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekafile_user" );
-  $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekadownload" );
+  //global $wpdb;
+  //$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekafile" );
+  //$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekafile_user" );
+  //$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tekadownload" );
   $role = get_role('administrator');
   $role->remove_cap('manage_tekafiles');
 }
