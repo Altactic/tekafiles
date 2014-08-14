@@ -79,16 +79,28 @@ class File_Report_table extends WP_List_Table {
 			WHERE tu.tekafile=$file_id";
 		$columns = $this->get_columns();
 		$hidden = array();
+		$per_page = 40;
 		$sortable = $this->get_sortable_columns();
-
 		$this->_column_headers = array($columns, $hidden, $sortable);
+
+		if ($_GET['orderby'] === 'u') $orderby = 'u.display_name';
+		if (isset($_GET['order'])) $order = mysql_real_escape_string($_GET["order"]);
+       	if (isset($orderby) && isset($order)) $query .= ' ORDER BY '.$orderby.' '.$order;
 
 		$data = $wpdb->get_results($query);
 		$current_page = $this->get_pagenum();
 		$total_items = count($data);
-		$this->items = $data;
 
-		$per_page = 3;
+		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+        if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }
+        $totalpages = ceil($totalitems/$per_page);
+       	if(!empty($paged) && !empty($per_page)){
+        	$offset = ($paged - 1) * $per_page;
+         	$query .= ' LIMIT ' . (int)$offset . ',' . (int)$per_page;
+       	}
+
+       	$this->items = $wpdb->get_results($query);
+
 		$this->set_pagination_args( array(
             'total_items' => $total_items,
             'per_page'    => $per_page,

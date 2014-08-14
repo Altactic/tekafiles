@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Teka Files
- * Plugin URI: http://foxrock.co
+ * Plugin URI: http://github.com/foxrock/tekafiles
  * Description: Teka file administrator.
- * Version: 0.1
+ * Version: 1.0
  * Author: Andres Londono
  * Author URI: http://www.foxrock.co
  * License: GPL2
@@ -73,15 +73,15 @@ function tekafiles_new_scripts () {
 }
 
 function tekafiles_page () {
-  if ( !current_user_can( 'manage_tekafiles' ) )  {
-    wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+  if (!current_user_can('manage_tekafiles')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
   }
   require_once TEKAFILES_DIR . '/inc/Files_Table.php';
   $table = new Files_Table();
   $table->prepare_items();
   ?>
   <div class='wrap'>
-    <h2>Documentos</h2>
+    <h2>Documentos<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
     <form action='' method='POST'>
       <?php $table->display(); ?>
     </form>
@@ -259,33 +259,35 @@ function tekafiles_admin_post_download_file () {
     $file = $wpdb->get_row("SELECT *
       FROM {$wpdb->prefix}tekafile
       WHERE ID=$file_id");
-    $path = $file->file;
-    if (is_file($path)) {
-      $ext = '.' . pathinfo($path, PATHINFO_EXTENSION);
-      $size = filesize($path);
+    if ($file->enabled) {
+      $path = $file->file;
+      if (is_file($path)) {
+        $ext = '.' . pathinfo($path, PATHINFO_EXTENSION);
+        $size = filesize($path);
 
-      header("Pragma: public");
-      header("Expires: 0");
-      header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-      header("Cache-Control: private", false);
-      header("Content-Description: File Transfer");
-      header("Content-Disposition: attachment; filename=\"" . $file->title . $ext . "\";");
-      header("Content-Transfer-Encoding: binary");
-      header("Content-Length: " . $size);
-      header("Content-type: application/octet-stream");
-      readfile($path);
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private", false);
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=\"" . $file->title . $ext . "\";");
+        header("Content-Transfer-Encoding: binary");
+        header("Content-Length: " . $size);
+        header("Content-type: application/octet-stream");
+        readfile($path);
 
-      $table = $wpdb->prefix . "tekadownload";
-      $values = array(
-        'tekafile' => $file_id,
-        'user' => $user_id,
-        'time' => date('Y-m-d H:i:s')
-      );
-      $wpdb->insert($table, $values);
-      $wpdb->query("UPDATE {$wpdb->prefix}tekafile_user
-        SET locked=1
-        WHERE tekafile=$file_id");
-      exit;
+        $table = $wpdb->prefix . "tekadownload";
+        $values = array(
+          'tekafile' => $file_id,
+          'user' => $user_id,
+          'time' => date('Y-m-d H:i:s')
+        );
+        $wpdb->insert($table, $values);
+        $wpdb->query("UPDATE {$wpdb->prefix}tekafile_user
+          SET locked=1
+          WHERE tekafile=$file_id");
+        exit;
+      }
     }
   }
   exit;
@@ -298,8 +300,21 @@ function tekafiles_upload_dir_filter ( $dir ) {
   return $dir;
 }
 
-function tekafiles_register_widgets () {
+function tekafiles_register_widgets() {
   register_widget ( 'Tekafiles_Widget' );
+}
+
+function tekafiles_login_redirect( $redirect_to ) {
+  global $user;
+  if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+    if ( in_array( 'subscriber', $user->roles ) ) {
+      return site_url( '/downloads' );
+    } else {
+      return $redirect_to;
+    }
+  } else {
+    return $redirect_to;
+  }
 }
 
 register_activation_hook( __FILE__, 'tekafiles_activate' );
@@ -320,3 +335,5 @@ add_action( 'admin_post_download', 'tekafiles_admin_post_download_file' );
 add_filter( 'upload_dir', 'tekafiles_upload_dir_filter' );
 
 add_action( 'widgets_init', 'tekafiles_register_widgets' );
+
+add_filter( 'login_redirect', 'tekafiles_login_redirect' );

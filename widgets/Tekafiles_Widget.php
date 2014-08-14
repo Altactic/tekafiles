@@ -13,6 +13,8 @@ class Tekafiles_Widget extends WP_Widget {
 		wp_enqueue_script('tekafiles_widget',
     		TEKAFILES_URL . '/js/widget.js',
     		array('jquery'));
+		wp_enqueue_style('tekafiles_widget',
+    		TEKAFILES_URL . '/css/widget.css');
 		extract($args);
 		global $wpdb;
 		$user_id = get_current_user_id ();

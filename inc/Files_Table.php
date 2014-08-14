@@ -14,16 +14,7 @@ class Files_Table extends WP_List_Table {
 			'plural' => 'Archivos',
 			'ajax' => false));
 	}
-/*
-	function extra_tablenav ($wich) {
-		if ($wich == 'top') {
-			echo "Hello, i'm in the top";
-		}
-		if ($wich == 'bottom') {
-			echo "Hello, i'm in the bottom";
-		}
-	}
-*/
+
 	function get_columns () {
 		return array(
 			'cb' => "<input type='checkbox' />",
@@ -118,24 +109,38 @@ class Files_Table extends WP_List_Table {
 	function prepare_items () {
 		if ($this->current_action()) $this->process_bulk_action();
 		global $wpdb;
+
 		$table = $wpdb->prefix . 'tekafile';
 		$query = "SELECT * FROM $table";
-		$per_page = 3;
+		$per_page = 40;
 		$columns = $this->get_columns();
 		$hidden = array();
 		$sortable = $this->get_sortable_columns();
-
 		$this->_column_headers = array($columns, $hidden, $sortable);
 
-		$data = $wpdb->get_results($query);
+		if ($_GET['orderby'] === 'c') $orderby = 'category';
+		if ($_GET['orderby'] === 't') $orderby = 'title';
+		if (isset($_GET['order'])) $order = mysql_real_escape_string($_GET["order"]);
+       	if (isset($orderby) && isset($order)) $query .= ' ORDER BY '.$orderby.' '.$order;
+
+       	$data = $wpdb->get_results($query);
 		$current_page = $this->get_pagenum();
 		$total_items = count($data);
-		$this->items = $data;
+
+		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+        if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }
+        $totalpages = ceil($totalitems/$per_page);
+       	if(!empty($paged) && !empty($per_page)){
+        	$offset = ($paged - 1) * $per_page;
+         	$query .= ' LIMIT ' . (int)$offset . ',' . (int)$per_page;
+       	}
+
+       	$this->items = $wpdb->get_results($query);
 
 		$this->set_pagination_args( array(
-            'total_items' => $total_items,                  //WE have to calculate the total number of items
-            'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
-            'total_pages' => ceil($total_items/$per_page)   //WE have to calculate the total number of pages
+            'total_items' => $total_items,
+            'per_page'    => $per_page,
+            'total_pages' => ceil($total_items / $per_page)
         ));
 	}
 
