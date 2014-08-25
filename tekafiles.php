@@ -3,7 +3,7 @@
  * Plugin Name: Teka Files
  * Plugin URI: http://github.com/foxrock/tekafiles
  * Description: Teka file administrator.
- * Version: 1.1
+ * Version: 1.0
  * Author: Andres Londono
  * Author URI: http://www.foxrock.co
  * License: GPL2
@@ -51,6 +51,13 @@ function tekafiles_menu () {
     'manage_tekafiles',
     'tekafiles_report.php',
     'tekafiles_report_page');
+  add_submenu_page(
+    NULL,
+    'Descargas',
+    'Descargas',
+    'manage_tekafiles',
+    'tekafiles_downloads.php',
+    'tekafiles_downloads_page');
 }
 
 function tekafiles_new_menu () {
@@ -81,7 +88,7 @@ function tekafiles_page () {
   $table->prepare_items();
   ?>
   <div class='wrap'>
-    <h2>Documentos<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
+    <h2>Documentos Teka<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
     <form action='' method='POST'>
       <?php $table->display(); ?>
     </form>
@@ -116,15 +123,52 @@ function tekafiles_report_page () {
   if ( !current_user_can( 'manage_tekafiles' ) )  {
     wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
   }
+  global $wpdb;
   require_once TEKAFILES_DIR . '/inc/File_Report_Table.php';
   $table = new File_Report_Table();
   $table->prepare_items();
+
+  $id = $_GET['t'];
+  $query = "SELECT title
+    FROM {$wpdb->prefix}tekafile
+    WHERE ID=$id";
+  $file = $wpdb->get_row($query);
   ?>
   <div class='wrap'>
-    <h2>Usuarios</h2>
+    <h2>Permisos de Descarga <?php echo $file->title; ?></h2>
+    <a href='<?php echo admin_url("admin.php?page=tekafiles.php"); ?>'>Volver a la lista de archivos</a>
     <form action='' method='POST'>
       <?php $table->display(); ?>
     </form>
+  </div>
+  <?php
+}
+
+function tekafiles_downloads_page () {
+  if ( !current_user_can( 'manage_tekafiles' ) )  {
+    wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+  }
+  global $wpdb;
+  require_once TEKAFILES_DIR . '/inc/File_Downloads_Table.php';
+  $table = new File_Downloads_Table();
+  $table->prepare_items();
+
+  $file_id = $_GET['t'];
+  $query = "SELECT title
+    FROM {$wpdb->prefix}tekafile
+    WHERE ID=$file_id";
+  $file = $wpdb->get_row($query);
+
+  $user_id = $_GET['u'];
+  $user = get_user_by('id', $user_id);
+
+  ?>
+  <div class='wrap'>
+    <h2>Reporte de descargas</h2>
+    <p>Usuario: <?php echo "$user->first_name $user->last_name"; ?></p>
+    <p>Archivo: <?php echo $file->title; ?></p>
+    <p><a href="<?php echo admin_url("admin.php?page=tekafiles_report.php&t=$file_id"); ?>">Volver a permisos de descargas</a></p>
+    <?php $table->display(); ?>
   </div>
   <?php
 }

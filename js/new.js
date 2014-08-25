@@ -1,8 +1,10 @@
 jQuery(document).ready(function ($) {
 
-    var form = $('form');
-    var userDatalist = $("#user-datalist");
-    var categoryDatalist = $("#category-datalist");
+    'use strict';
+
+    //var form = $('form');
+    //var userDatalist = $('#user-datalist');
+    var categoryDatalist = $('#category-datalist');
     var usersRow = $('#users-row');
     var users = $('#users');
 

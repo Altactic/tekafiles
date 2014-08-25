@@ -23,10 +23,10 @@ class Tekafiles_Widget extends WP_Widget {
 			JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile=t.ID
 			WHERE tu.user=$user_id AND t.enabled>0 AND tu.locked=0
 			GROUP BY t.category");
-		$files = $wpdb->get_results("SELECT t.title as title, t.category as category, t.file as file, t.ID as ID, t.description as description
+		$files = $wpdb->get_results("SELECT t.title as title, t.category as category, t.file as file, t.ID as ID, t.description as description, tu.locked as locked
 			FROM {$wpdb->prefix}tekafile_user as tu
 			JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile=t.ID
-			WHERE tu.user=$user_id AND t.enabled>0 AND tu.locked=0");
+			WHERE tu.user=$user_id AND t.enabled>0");
 		$title = apply_filters('widget_title', $instance['title']);
 		echo $before_widget;
 		?>
@@ -45,7 +45,11 @@ class Tekafiles_Widget extends WP_Widget {
 					<?php foreach ( $files as $file ): ?>
 					<?php if ($file->category === $category): ?>
 					<li>
+						<?php if($file->locked): ?>
+						<a href="#" class='locked'><?php echo $file->title; ?></a>
+						<?php else: ?>
 						<a href="<?php echo admin_url("admin-post.php?action=download&t=$file->ID"); ?>"><?php echo $file->title; ?></a>
+						<?php endif; ?>
 						<?php echo $file->description; ?>
 					</li>
 					<?php endif; ?>

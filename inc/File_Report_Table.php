@@ -10,7 +10,7 @@ class File_Report_table extends WP_List_Table {
 		return array(
 			'cb' => "<input type='checkbox' />",
 			'user' => 'Usuario',
-			'locked' => 'Bloqueado');
+			'locked' => 'Bloqueado / Descargado');
 	}
 
 	function get_sortable_columns () {
@@ -25,6 +25,14 @@ class File_Report_table extends WP_List_Table {
 	function column_cb ($item) {
 		return "<input type='checkbox' name='user[]' value='$item->ID' />";
 	}
+
+  function column_user($item) {
+    $downloads = admin_url("admin.php?page=tekafiles_downloads.php&t=$item->tid&u=$item->uid");
+    $actions = array(
+      'downloads' => "<a href='$downloads'>Reporte de descargas</a>");
+    $rowactions = $this->row_actions($actions);
+    return "$item->user $rowactions";
+  }
 
 	function column_locked ($item) {
 		if ($item->locked) return 'Si';
@@ -72,14 +80,14 @@ class File_Report_table extends WP_List_Table {
 		$tu = $wpdb->prefix . 'tekafile_user';
 		$u = $wpdb->prefix . 'users';
 		$t = $wpdb->prefix . 'tekafile';
-		$query = "SELECT tu.ID as ID, u.display_name as user, tu.locked as locked
+		$query = "SELECT tu.ID as ID, u.display_name as user, tu.locked as locked, tu.user as uid, tu.tekafile as tid
 			FROM $tu as tu
 			JOIN $u as u ON tu.user=u.ID
 			JOIN $t as t ON tu.tekafile=t.ID
 			WHERE tu.tekafile=$file_id";
 		$columns = $this->get_columns();
 		$hidden = array();
-		$per_page = 40;
+		$per_page = 20;
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
 

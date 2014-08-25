@@ -6,6 +6,8 @@
 	<h2>Nuevo Documento</h2>
 	<?php endif; ?>
 
+	<a href='<?php echo admin_url("admin.php?page=tekafiles.php"); ?>'>Volver a la lista de archivos</a>
+
 	<form id="tekafile"
 		method='post'
 		action='<?php echo admin_url( '/admin.php?page=tekafiles_new.php&noheader=true' ); ?>'

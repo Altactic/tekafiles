@@ -1,11 +1,5 @@
 <?php
 
-// http://www.smashingmagazine.com/2011/11/03/native-admin-tables-wordpress/
-
-if(!class_exists('WP_List_Table')){
-    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
-
 class Files_Table extends WP_List_Table {
 
 	function __construct() {
@@ -43,7 +37,7 @@ class Files_Table extends WP_List_Table {
 		$report = admin_url("admin.php?page=tekafiles_report.php&t=$item->ID");
 		$actions = array(
 			'edit' => "<a href='$edit'>Editar</a>",
-			'report' => "<a href='$report'>Reporte</a>");
+			'report' => "<a href='$report'>Permisos</a>");
 		$rowactions = $this->row_actions($actions);
 		return "$item->title $rowactions";
 	}
@@ -112,7 +106,7 @@ class Files_Table extends WP_List_Table {
 
 		$table = $wpdb->prefix . 'tekafile';
 		$query = "SELECT * FROM $table";
-		$per_page = 40;
+		$per_page = 20;
 		$columns = $this->get_columns();
 		$hidden = array();
 		$sortable = $this->get_sortable_columns();
