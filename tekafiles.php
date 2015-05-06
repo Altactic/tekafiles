@@ -8,78 +8,44 @@
  * Author URI: http://www.foxrock.co
  * License: GPL2
  */
-
-define( 'TEKAFILES_PREFIX', 'TEKAFILES_' );
-define( 'TEKAFILES_DIR',
-  WP_PLUGIN_DIR . '/' . basename ( dirname ( __FILE__ ) ) );
-define( 'TEKAFILES_URL', plugins_url ( '', __FILE__ ) );
+define('TEKAFILES_PREFIX', 'TEKAFILES_');
+define('TEKAFILES_DIR', WP_PLUGIN_DIR . '/' . basename(dirname(__FILE__)));
+define('TEKAFILES_URL', plugins_url('', __FILE__));
 
 include_once TEKAFILES_DIR . '/install.php';
 include_once TEKAFILES_DIR . '/widgets/Tekafiles_Widget.php';
 
-function tekafiles_admin_init () {
-  wp_register_script('tekafiles_new',
-    TEKAFILES_URL . '/js/new.js',
-    array('jquery'));
-  wp_register_script('tekafiles_widget',
-    TEKAFILES_URL . '/js/widget.js',
-    array('jquery'));
+function tekafiles_admin_init() {
+  wp_register_script('tekafiles_new', TEKAFILES_URL . '/js/new.js', array('jquery'));
+  wp_register_script('tekafiles_widget', TEKAFILES_URL . '/js/widget.js', array('jquery'));
   wp_register_style(
-    'tekafiles_new',
-    TEKAFILES_URL . '/css/new.css');
+      'tekafiles_new', TEKAFILES_URL . '/css/new.css');
 }
 
-function tekafiles_menu () {
+function tekafiles_menu() {
   add_menu_page(
-    'Libreria Teka',
-    'Libreria Teka',
-    'manage_tekafiles',
-    'tekafiles.php',
-    'tekafiles_page',
-    'dashicons-clipboard');
+      'Libreria Teka', 'Libreria Teka', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page', 'dashicons-clipboard');
   add_submenu_page(
-    'tekafiles.php',
-    'Documentos',
-    'Documentos',
-    'manage_tekafiles',
-    'tekafiles.php',
-    'tekafiles_page');
+      'tekafiles.php', 'Documentos', 'Documentos', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page');
   add_submenu_page(
-    NULL,
-    'Reporte',
-    'Reporte',
-    'manage_tekafiles',
-    'tekafiles_report.php',
-    'tekafiles_report_page');
+      NULL, 'Reporte', 'Reporte', 'manage_tekafiles', 'tekafiles_report.php', 'tekafiles_report_page');
   add_submenu_page(
-    NULL,
-    'Descargas',
-    'Descargas',
-    'manage_tekafiles',
-    'tekafiles_downloads.php',
-    'tekafiles_downloads_page');
+      NULL, 'Descargas', 'Descargas', 'manage_tekafiles', 'tekafiles_downloads.php', 'tekafiles_downloads_page');
 }
 
-function tekafiles_new_menu () {
+function tekafiles_new_menu() {
   $suffix = add_submenu_page(
-    'tekafiles.php',
-    'Documento',
-    'Nuevo Documento',
-    'manage_tekafiles',
-    'tekafiles_new.php',
-    'tekafiles_new_page');
+      'tekafiles.php', 'Documento', 'Nuevo Documento', 'manage_tekafiles', 'tekafiles_new.php', 'tekafiles_new_page');
   add_action('admin_print_scripts-' . $suffix, 'tekafiles_new_scripts');
 }
 
-function tekafiles_new_scripts () {
-  wp_localize_script( 'tekafiles_new',
-    'ajax',
-    array( 'url' => admin_url('admin-ajax.php') ));
+function tekafiles_new_scripts() {
+  wp_localize_script('tekafiles_new', 'ajax', array('url' => admin_url('admin-ajax.php')));
   wp_enqueue_script('tekafiles_new');
   wp_enqueue_style('tekafiles_new');
 }
 
-function tekafiles_page () {
+function tekafiles_page() {
   if (!current_user_can('manage_tekafiles')) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
   }
@@ -90,13 +56,13 @@ function tekafiles_page () {
   <div class='wrap'>
     <h2>Documentos Teka<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
     <form action='' method='POST'>
-      <?php $table->display(); ?>
+        <?php $table->display(); ?>
     </form>
   </div>
   <?php
 }
 
-function tekafiles_new_page () {
+function tekafiles_new_page() {
   if (isset($_POST['submit'])) {
     tekafiles_process_new();
   }
@@ -107,21 +73,20 @@ function tekafiles_new_page () {
     global $wpdb;
     $ID = $_GET['e'];
     $file = $wpdb->get_row(
-      "SELECT *
+        "SELECT *
       FROM {$wpdb->prefix}tekafile
       WHERE ID=$ID");
     $file_users = $wpdb->get_results(
-      "SELECT user, tekafile
+        "SELECT user, tekafile
       FROM {$wpdb->prefix}tekafile_user
-      WHERE tekafile=$ID",
-      OBJECT_K);
+      WHERE tekafile=$ID", OBJECT_K);
   }
   require_once TEKAFILES_DIR . '/views/new.php';
 }
 
-function tekafiles_report_page () {
-  if ( !current_user_can( 'manage_tekafiles' ) )  {
-    wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+function tekafiles_report_page() {
+  if (!current_user_can('manage_tekafiles')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
   }
   global $wpdb;
   require_once TEKAFILES_DIR . '/inc/File_Report_Table.php';
@@ -138,15 +103,15 @@ function tekafiles_report_page () {
     <h2>Permisos de Descarga <?php echo $file->title; ?></h2>
     <a href='<?php echo admin_url("admin.php?page=tekafiles.php"); ?>'>Volver a la lista de archivos</a>
     <form action='' method='POST'>
-      <?php $table->display(); ?>
+        <?php $table->display(); ?>
     </form>
   </div>
   <?php
 }
 
-function tekafiles_downloads_page () {
-  if ( !current_user_can( 'manage_tekafiles' ) )  {
-    wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+function tekafiles_downloads_page() {
+  if (!current_user_can('manage_tekafiles')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
   }
   global $wpdb;
   require_once TEKAFILES_DIR . '/inc/File_Downloads_Table.php';
@@ -161,7 +126,6 @@ function tekafiles_downloads_page () {
 
   $user_id = $_GET['u'];
   $user = get_user_by('id', $user_id);
-
   ?>
   <div class='wrap'>
     <h2>Reporte de descargas</h2>
@@ -173,8 +137,8 @@ function tekafiles_downloads_page () {
   <?php
 }
 
-function tekafiles_process_new () {
-  if ( !current_user_can('manage_tekafiles') )  {
+function tekafiles_process_new() {
+  if (!current_user_can('manage_tekafiles')) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
   }
 
@@ -184,30 +148,34 @@ function tekafiles_process_new () {
 
   $category = strtolower($_POST['category']);
   $date = date('Y-m-d', strtotime($_POST['date']));
-  if ( isset($_POST['public']) ) $public = 1; else $public = 0;
-  if (isset($_POST['enabled'])) $enabled = 1; else $enabled = 0;
+  if (isset($_POST['public']))
+    $public = 1;
+  else
+    $public = 0;
+  if (isset($_POST['enabled']))
+    $enabled = 1;
+  else
+    $enabled = 0;
 
   $all = get_users(array(
-        'role' => 'subscriber',
-        'fields' => 'ID'));
+    'role' => 'subscriber',
+    'fields' => 'ID'));
   $values = array(
-      'title' => $_POST['title'],
-      'description' => $_POST['description'],
-      'category' => $category,
-      'date' => $date,
-      'public' => $public,
-      'enabled' => $enabled);
+    'title' => $_POST['title'],
+    'description' => $_POST['description'],
+    'category' => $category,
+    'date' => $date,
+    'public' => $public,
+    'enabled' => $enabled);
   if (isset($_POST['edit'])) {
     $file_id = $_POST['edit'];
     $old = $wpdb->get_col(
-      "SELECT user
+        "SELECT user
       FROM {$wpdb->prefix}tekafile_user
       WHERE tekafile=$file_id");
     $wpdb->update(
-      $wpdb->prefix . "tekafile",
-      $values,
-      array(
-        'ID' => $file_id));
+        $wpdb->prefix . "tekafile", $values, array(
+      'ID' => $file_id));
     $new = $_POST['users'];
     if ($public) {
       $insert = array_diff($all, $old);
@@ -238,8 +206,10 @@ function tekafiles_process_new () {
     $values['file'] = $file['file'];
     $wpdb->insert($wpdb->prefix . 'tekafile', $values);
     $file_id = $wpdb->insert_id;
-    if ($public) $insert = $all;
-    else $insert = $_POST['users'];
+    if ($public)
+      $insert = $all;
+    else
+      $insert = $_POST['users'];
     $values = "";
     foreach ($insert as $ID) {
       $values .= "($file_id, $ID),";
@@ -251,16 +221,16 @@ function tekafiles_process_new () {
     $wpdb->query($query);
   }
 
-  wp_redirect( admin_url( '/admin.php?page=tekafiles.php' ) );
+  wp_redirect(admin_url('/admin.php?page=tekafiles.php'));
   exit;
 }
 
-function tekafiles_ajax_search_users () {
+function tekafiles_ajax_search_users() {
   $search = $_POST['search'];
-  $users = get_users( array(
+  $users = get_users(array(
     'search' => "$search*",
     'fields' => array('ID', 'user_email', 'display_name', 'user_login')
-     ) );
+  ));
   $result = "";
   foreach ($users as $user) {
     $result .= "<option value='$user->user_email' label='$user->display_name' />";
@@ -269,20 +239,20 @@ function tekafiles_ajax_search_users () {
   die();
 }
 
-function tekafiles_ajax_search_categories () {
+function tekafiles_ajax_search_categories() {
   global $wpdb;
-  $search = strtolower( $_POST['search'] );
+  $search = strtolower($_POST['search']);
   $table = $wpdb->prefix . "tekafile";
-  $rows = $wpdb->get_results( "SELECT category FROM $table WHERE category LIKE '%$search%' GROUP BY category" );
+  $rows = $wpdb->get_results("SELECT category FROM $table WHERE category LIKE '%$search%' GROUP BY category");
   $result = "";
-  foreach ( $rows as $row ) {
+  foreach ($rows as $row) {
     $result .= "<option value='$row->category' />";
   }
   echo $result;
   die();
 }
 
-function tekafiles_ajax_validate_user () {
+function tekafiles_ajax_validate_user() {
   $email = $_POST['email'];
   $user = get_user_by('email', $email);
   if ($user) {
@@ -291,15 +261,18 @@ function tekafiles_ajax_validate_user () {
   exit;
 }
 
-function tekafiles_admin_post_download_file () {
+function tekafiles_admin_post_download_file() {
   global $wpdb;
   $user_id = get_current_user_id();
   $file_id = $_GET['t'];
-  $access = $wpdb->get_row("SELECT *
+  $query = "SELECT *
     FROM {$wpdb->prefix}tekafile_user
-    WHERE user=$user_id AND tekafile=$file_id");
-
+    WHERE user=$user_id AND tekafile=$file_id";
+  $access = $wpdb->get_row($query);
+  var_dump($query);
   if ($access && !$access->locked) {
+    echo "fuck!";
+
     $file = $wpdb->get_row("SELECT *
       FROM {$wpdb->prefix}tekafile
       WHERE ID=$file_id");
@@ -329,7 +302,7 @@ function tekafiles_admin_post_download_file () {
         $wpdb->insert($table, $values);
         $wpdb->query("UPDATE {$wpdb->prefix}tekafile_user
           SET locked=1
-          WHERE tekafile=$file_id");
+          WHERE tekafile=$file_id AND user=$user_id");
         exit;
       }
     }
@@ -337,7 +310,7 @@ function tekafiles_admin_post_download_file () {
   exit;
 }
 
-function tekafiles_upload_dir_filter ( $dir ) {
+function tekafiles_upload_dir_filter($dir) {
   $dir['subdir'] = '/tekafiles';
   $dir['path'] = $dir['basedir'] . $dir['subdir'];
   $dir['url'] = $dir['baseurl'] . $dir['subdir'];
@@ -345,39 +318,41 @@ function tekafiles_upload_dir_filter ( $dir ) {
 }
 
 function tekafiles_register_widgets() {
-  register_widget ( 'Tekafiles_Widget' );
+  register_widget('Tekafiles_Widget');
 }
 
-function tekafiles_login_redirect( $redirect_to ) {
+function tekafiles_login_redirect($redirect_to) {
   global $user;
-  if ( isset( $user->roles ) && is_array( $user->roles ) ) {
-    if ( in_array( 'subscriber', $user->roles ) ) {
-      return site_url( '/downloads' );
-    } else {
+  if (isset($user->roles) && is_array($user->roles)) {
+    if (in_array('subscriber', $user->roles)) {
+      return site_url('/downloads');
+    }
+    else {
       return $redirect_to;
     }
-  } else {
+  }
+  else {
     return $redirect_to;
   }
 }
 
-register_activation_hook( __FILE__, 'tekafiles_activate' );
-register_deactivation_hook( __FILE__, 'tekafiles_deactivate' );
-add_action( 'plugins_loaded', 'tekafiles_update_db_check' );
+register_activation_hook(__FILE__, 'tekafiles_activate');
+register_deactivation_hook(__FILE__, 'tekafiles_deactivate');
+add_action('plugins_loaded', 'tekafiles_update_db_check');
 
-add_action( 'admin_menu', 'tekafiles_menu' );
-add_action( 'admin_menu', 'tekafiles_new_menu' );
+add_action('admin_menu', 'tekafiles_menu');
+add_action('admin_menu', 'tekafiles_new_menu');
 
-add_action( 'wp_ajax_search_users', 'tekafiles_ajax_search_users' );
-add_action( 'wp_ajax_search_categories', 'tekafiles_ajax_search_categories' );
-add_action( 'wp_ajax_validate_user', 'tekafiles_ajax_validate_user' );
+add_action('wp_ajax_search_users', 'tekafiles_ajax_search_users');
+add_action('wp_ajax_search_categories', 'tekafiles_ajax_search_categories');
+add_action('wp_ajax_validate_user', 'tekafiles_ajax_validate_user');
 
-add_action( 'admin_init', 'tekafiles_admin_init' );
+add_action('admin_init', 'tekafiles_admin_init');
 
-add_action( 'admin_post_download', 'tekafiles_admin_post_download_file' );
+add_action('admin_post_download', 'tekafiles_admin_post_download_file');
 
-add_filter( 'upload_dir', 'tekafiles_upload_dir_filter' );
+add_filter('upload_dir', 'tekafiles_upload_dir_filter');
 
-add_action( 'widgets_init', 'tekafiles_register_widgets' );
+add_action('widgets_init', 'tekafiles_register_widgets');
 
-add_filter( 'login_redirect', 'tekafiles_login_redirect' );
+add_filter('login_redirect', 'tekafiles_login_redirect');
