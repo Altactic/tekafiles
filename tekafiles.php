@@ -269,10 +269,7 @@ function tekafiles_admin_post_download_file() {
     FROM {$wpdb->prefix}tekafile_user
     WHERE user=$user_id AND tekafile=$file_id";
   $access = $wpdb->get_row($query);
-  var_dump($query);
   if ($access && !$access->locked) {
-    echo "fuck!";
-
     $file = $wpdb->get_row("SELECT *
       FROM {$wpdb->prefix}tekafile
       WHERE ID=$file_id");
@@ -281,6 +278,8 @@ function tekafiles_admin_post_download_file() {
       if (is_file($path)) {
         $ext = '.' . pathinfo($path, PATHINFO_EXTENSION);
         $size = filesize($path);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $path);
 
         header("Pragma: public");
         header("Expires: 0");

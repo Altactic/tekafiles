@@ -4,8 +4,8 @@ class Files_Table extends WP_List_Table {
 
 	function __construct() {
 		parent::__construct( array(
-			'singular' => 'Archivo',
-			'plural' => 'Archivos',
+			'singular' => 'Library',
+			'plural' => 'Libraries',
 			'ajax' => false));
 	}
 
@@ -106,7 +106,7 @@ class Files_Table extends WP_List_Table {
 
 		$table = $wpdb->prefix . 'tekafile';
 		$query = "SELECT * FROM $table";
-		$per_page = 20;
+		$per_page = 10000;
 		$columns = $this->get_columns();
 		$hidden = array();
 		$sortable = $this->get_sortable_columns();
