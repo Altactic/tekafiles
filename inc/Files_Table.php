@@ -13,7 +13,6 @@ class Files_Table extends WP_List_Table {
 		return array(
 			'cb' => "<input type='checkbox' />",
 			'title' => 'Título',
-			'description' => 'Descripción',
 			'category' => 'Categoría',
 			'enabled' => 'Habilitado');
 	}

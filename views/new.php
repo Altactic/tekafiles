@@ -34,17 +34,7 @@
 				</td>
 			</tr>
 
-			<tr>
-				<th scope='row'>
-					<label for='description'>Descripción</label>
-				</th>
-				<td>
-					<textarea id='description'
-						name='description'
-						required ><?php echo $file->description ?></textarea>
-				</td>
-			</tr>
-
+			
 			<?php if(!isset($file)): ?>
 			<tr>
 				<th scope='row'>
@@ -72,19 +62,6 @@
 						autocomplete='off'
 						value='<?php echo $file->category ?>' />
 					<datalist id='category-datalist' ></datalist>
-				</td>
-			</tr>
-
-			<tr>
-				<th scope='row'>
-					<label for='date'>Fecha</label>
-				</th>
-				<td>
-					<input id='date'
-						type='date'
-						name='date'
-						value='<?php echo $file->date ?>'
-						required />
 				</td>
 			</tr>
 
