@@ -1,4 +1,4 @@
-#tekafiles-accordion a.locked, #tekafiles-accordion a.locked:hover{
+a.locked, a.locked:hover{
 	color: #666;
 	text-decoration: line-through;
 }

@@ -1,4 +1,11 @@
 jQuery(document).ready(function($){
+    
+    $("#accordion").accordion({
+        active: false,
+        collapsible: true,
+        autoHeight: false
+    });
+    
     $(".lnk-download").on("click", function(e){
         e.preventDefault();
         var $link = $(this);

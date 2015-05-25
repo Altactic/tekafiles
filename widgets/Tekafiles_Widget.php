@@ -31,13 +31,13 @@ class Tekafiles_Widget extends WP_Widget {
       <?php echo $before_title . $title . $after_title; ?>
     <?php endif; ?>
 
-    <div id='tekafiles-accordion' class='accordion-container'>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    
+    <div id="accordion">
     <?php foreach ($categories as $category): ?>
-        <div class='accordion-title'>
-          <?php echo $category; ?>
-          <span class='ac-indicator'></span>
-        </div>
-        <div class='pane'>
+        <h3><?php echo $category; ?></h3>
+        <div>
           <ul class='bullet_arrow2 imglist'>
       <?php foreach ($files as $file): ?>
         <?php if ($file->category === $category): ?>
