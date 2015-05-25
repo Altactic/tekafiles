@@ -43,9 +43,9 @@ class Tekafiles_Widget extends WP_Widget {
         <?php if ($file->category === $category): ?>
                 <li>
                   <?php if ($file->locked): ?>
-                    <a href="#" class='locked'><?php echo $file->title; ?></a>
+                    <a href="#" class='lnk-download locked'><?php echo $file->title; ?></a>
                     <?php else: ?>
-                    <a href="<?php echo admin_url("admin-post.php?action=download&t=$file->ID"); ?>"><?php echo $file->title; ?></a>
+                    <a class="lnk-download" href="<?php echo admin_url("admin-post.php?action=download&t=$file->ID"); ?>"><?php echo $file->title; ?></a>
                   <?php endif; ?>
                   <?php echo $file->description; ?>
                 </li>

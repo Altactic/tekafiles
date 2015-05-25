@@ -1,13 +1,24 @@
 jQuery(document).ready(function($){
+    $(".lnk-download").on("click", function(e){
+        e.preventDefault();
+        var $link = $(this);
+        var locked = $link.hasClass('locked');
 
-    $('#tekafiles-accordion a').on('click', function (e) {
-        if ($(this).hasClass('locked')) {
-            e.preventDefault();
+        if(locked){
             return false;
         }
-        else {
-            $(this).addClass('locked');
+        else{
+            var url = $link.attr("href");
+
+            var text = "are you sure to download this file?";
+
+            if(confirm(text)){
+                
+                $link.addClass('locked');
+                $link.attr("href", "#");
+                
+                window.location = url;
+            }
         }
     });
-
 });
