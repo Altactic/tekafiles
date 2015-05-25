@@ -114,7 +114,12 @@ class Files_Table extends WP_List_Table {
 		if ($_GET['orderby'] === 'c') $orderby = 'category';
 		if ($_GET['orderby'] === 't') $orderby = 'title';
 		if (isset($_GET['order'])) $order = mysql_real_escape_string($_GET["order"]);
-       	if (isset($orderby) && isset($order)) $query .= ' ORDER BY '.$orderby.' '.$order;
+       	if (isset($orderby) && isset($order)){
+            $query .= ' ORDER BY '.$orderby.' '.$order;
+        }
+        else{
+            $query .= ' ORDER BY ID DESC';
+        }
 
        	$data = $wpdb->get_results($query);
 		$current_page = $this->get_pagenum();
