@@ -204,6 +204,12 @@ function tekafiles_process_new() {
     $files = reArrayFiles($_FILES['files']);
     $overrides = array('test_form' => false);
     
+    $user_values = "";
+    if ($public)
+        $user_ids = $all;
+    else
+        $user_ids = $_POST['users'];
+    
     foreach($files as $upload){
         $file = wp_handle_upload($upload, $overrides);
         
@@ -214,20 +220,17 @@ function tekafiles_process_new() {
         
         $file_id = $wpdb->insert_id;
         
-        if ($public)
-            $insert = $all;
-        else
-            $insert = $_POST['users'];
-        $user_values = "";
-        foreach ($insert as $ID) {
-          $user_values .= "($file_id, $ID),";
+        foreach ($user_ids as $user_id) {
+            $user_values .= "($file_id, $user_id),";
         }
-        $user_values = substr($user_values, 0, strlen($user_values) - 1);
-        $query = "INSERT INTO {$wpdb->prefix}tekafile_user
-            (tekafile, user)
-            VALUES $user_values";
-        $wpdb->query($query);
     }
+    
+    $user_values = substr($user_values, 0, strlen($user_values) - 1);
+    $query = "INSERT INTO {$wpdb->prefix}tekafile_user
+        (tekafile, user)
+        VALUES $user_values";
+
+    $wpdb->query($query);
   }
 
   wp_redirect(admin_url('/admin.php?page=tekafiles.php'));
