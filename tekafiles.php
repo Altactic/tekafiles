@@ -167,6 +167,7 @@ function tekafiles_process_new() {
     'date' => $date,
     'public' => $public,
     'enabled' => $enabled);
+  
   if (isset($_POST['edit'])) {
     $file_id = $_POST['edit'];
     $old = $wpdb->get_col(
@@ -200,25 +201,33 @@ function tekafiles_process_new() {
     $wpdb->query($query);
   }
   else {
-    $upload = $_FILES['file'];
+    $files = reArrayFiles($_FILES['files']);
     $overrides = array('test_form' => false);
-    $file = wp_handle_upload($upload, $overrides);
-    $values['file'] = $file['file'];
-    $wpdb->insert($wpdb->prefix . 'tekafile', $values);
-    $file_id = $wpdb->insert_id;
-    if ($public)
-      $insert = $all;
-    else
-      $insert = $_POST['users'];
-    $values = "";
-    foreach ($insert as $ID) {
-      $values .= "($file_id, $ID),";
+    
+    foreach($files as $upload){
+        $file = wp_handle_upload($upload, $overrides);
+        
+        $values['title'] = extractFileName($upload['name']);
+        $values['file'] = $file["file"];
+        
+        $wpdb->insert($wpdb->prefix . 'tekafile', $values);
+        
+        $file_id = $wpdb->insert_id;
+        
+        if ($public)
+            $insert = $all;
+        else
+            $insert = $_POST['users'];
+        $user_values = "";
+        foreach ($insert as $ID) {
+          $user_values .= "($file_id, $ID),";
+        }
+        $user_values = substr($user_values, 0, strlen($user_values) - 1);
+        $query = "INSERT INTO {$wpdb->prefix}tekafile_user
+            (tekafile, user)
+            VALUES $user_values";
+        $wpdb->query($query);
     }
-    $values = substr($values, 0, strlen($values) - 1);
-    $query = "INSERT INTO {$wpdb->prefix}tekafile_user
-        (tekafile, user)
-        VALUES $values";
-    $wpdb->query($query);
   }
 
   wp_redirect(admin_url('/admin.php?page=tekafiles.php'));
@@ -333,6 +342,33 @@ function tekafiles_login_redirect($redirect_to) {
   else {
     return $redirect_to;
   }
+}
+
+function reArrayFiles(&$file_post) {
+
+    $file_ary = array();
+    $file_count = count($file_post['name']);
+    $file_keys = array_keys($file_post);
+
+    for ($i=0; $i<$file_count; $i++) {
+        foreach ($file_keys as $key) {
+            $file_ary[$i][$key] = $file_post[$key][$i];
+        }
+    }
+
+    return $file_ary;
+}
+
+function extractFileName($name){
+    $exp = explode(".", $name);
+    unset($exp[count($exp) - 1]);
+    return implode(".", $exp);
+}
+
+function dump($var){
+    echo "<pre>";
+    print_r($var);
+    echo "</pre>";
 }
 
 register_activation_hook(__FILE__, 'tekafiles_activate');

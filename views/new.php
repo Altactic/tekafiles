@@ -20,7 +20,8 @@
 		<?php wp_nonce_field('tekafiles_new_file_nonce'); ?>
 
 		<table class='form-table'>
-
+            
+            <?php if(isset($file->title)): ?>
 			<tr>
 				<th scope='row'>
 					<label for='title'>Título</label>
@@ -33,6 +34,7 @@
 						required />
 				</td>
 			</tr>
+            <?php endif; ?>
 
 			
 			<?php if(!isset($file)): ?>
@@ -43,8 +45,9 @@
 				<td>
 					<input id='file'
 						type='file'
-						name='file'
+						name='files[]'
 						title='Buscar'
+                        multiple="multiple"
 						required />
 				</td>
 			</tr>
