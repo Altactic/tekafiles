@@ -14,7 +14,8 @@ class Files_Table extends WP_List_Table {
 			'cb' => "<input type='checkbox' />",
 			'title' => 'Título',
 			'category' => 'Categoría',
-			'enabled' => 'Habilitado');
+			'enabled' => 'Habilitado',
+			'users' => 'Permisos');
 	}
 
 	function get_sortable_columns () {
@@ -102,11 +103,20 @@ class Files_Table extends WP_List_Table {
 	function prepare_items () {
 		if ($this->current_action()) $this->process_bulk_action();
 		global $wpdb;
-
-		$table = $wpdb->prefix . 'tekafile';
-		$query = "SELECT * FROM $table";
-		$per_page = 10000;
-		$columns = $this->get_columns();
+        
+        $query = '
+            SELECT 
+                f.*,
+                CASE f.public WHEN 1 THEN "ALL" ELSE GROUP_CONCAT(" ", u.display_name) END AS users
+            FROM '. $wpdb->prefix .'tekafile f
+            JOIN '. $wpdb->prefix .'tekafile_user fu ON f.ID = fu.tekafile
+            JOIN '. $wpdb->prefix .'users u ON fu.user = u.ID
+            GROUP BY f.ID
+        ';
+        
+		$per_page = 1000;
+        
+        $columns = $this->get_columns();
 		$hidden = array();
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
@@ -122,19 +132,20 @@ class Files_Table extends WP_List_Table {
         }
 
        	$data = $wpdb->get_results($query);
-		$current_page = $this->get_pagenum();
+        
+		//$current_page = $this->get_pagenum();
 		$total_items = count($data);
 
 		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
         if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }
-        $totalpages = ceil($totalitems/$per_page);
+        //$totalpages = ceil($totalitems/$per_page);
        	if(!empty($paged) && !empty($per_page)){
         	$offset = ($paged - 1) * $per_page;
          	$query .= ' LIMIT ' . (int)$offset . ',' . (int)$per_page;
        	}
 
        	$this->items = $wpdb->get_results($query);
-
+        
 		$this->set_pagination_args( array(
             'total_items' => $total_items,
             'per_page'    => $per_page,
