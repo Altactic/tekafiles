@@ -21,7 +21,8 @@ class Files_Table extends WP_List_Table {
 	function get_sortable_columns () {
 		return array(
 			'title' => 'title',
-			'category' => 'category');
+			'category' => 'category',
+			'users' => 'users');
 	}
 
 	function column_default ($item, $column_name) {
@@ -123,6 +124,7 @@ class Files_Table extends WP_List_Table {
 
 		if ($_GET['orderby'] === 'c') $orderby = 'category';
 		if ($_GET['orderby'] === 't') $orderby = 'title';
+		if ($_GET['orderby'] === 'u') $orderby = 'users';
 		if (isset($_GET['order'])) $order = mysql_real_escape_string($_GET["order"]);
        	if (isset($orderby) && isset($order)){
             $query .= ' ORDER BY '.$orderby.' '.$order;
