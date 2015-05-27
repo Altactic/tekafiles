@@ -115,7 +115,9 @@ class Files_Table extends WP_List_Table {
             GROUP BY f.ID
         ';
         
-		$per_page = 1000;
+        $query_count = 'SELECT COUNT(*) AS c FROM '. $wpdb->prefix .'tekafile';
+        
+		$per_page = 100;
         
         $columns = $this->get_columns();
 		$hidden = array();
@@ -133,14 +135,17 @@ class Files_Table extends WP_List_Table {
             $query .= ' ORDER BY ID DESC';
         }
 
-       	$data = $wpdb->get_results($query);
+       	$count_result = $wpdb->get_results($query_count);
         
 		//$current_page = $this->get_pagenum();
-		$total_items = count($data);
+		$total_items = $count_result[0]->c;
 
 		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
-        if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }
-        //$totalpages = ceil($totalitems/$per_page);
+        
+        if(empty($paged) || !is_numeric($paged) || $paged <= 0 ){ 
+            $paged = 1; 
+        }
+        
        	if(!empty($paged) && !empty($per_page)){
         	$offset = ($paged - 1) * $per_page;
          	$query .= ' LIMIT ' . (int)$offset . ',' . (int)$per_page;
