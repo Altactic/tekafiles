@@ -147,7 +147,7 @@ function tekafiles_process_new() {
   // check_admin_referer( 'tekafiles_new_file_nonce' );
 
   $category = strtolower($_POST['category']);
-  $date = date('Y-m-d', strtotime($_POST['date']));
+  $date = date('Y-m-d');
   if (isset($_POST['public']))
     $public = 1;
   else
