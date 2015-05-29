@@ -311,6 +311,7 @@ function tekafiles_admin_post_download_file() {
           'time' => date('Y-m-d H:i:s')
         );
         $wpdb->insert($table, $values);
+        
         $wpdb->query("UPDATE {$wpdb->prefix}tekafile_user
           SET locked=1
           WHERE tekafile=$file_id AND user=$user_id");

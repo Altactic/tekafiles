@@ -46,6 +46,7 @@ function tekafiles_install_db () {
     tekafile BIGINT(20) UNSIGNED NOT NULL,
     time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     user BIGINT(20) NOT NULL,
+    ip VARCHAR(20) NULL DEFAULT '',
     PRIMARY KEY  id (id),
     KEY tekafile (tekafile),
     KEY user (user)
