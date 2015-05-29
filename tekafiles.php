@@ -39,6 +39,12 @@ function tekafiles_new_menu() {
   add_action('admin_print_scripts-' . $suffix, 'tekafiles_new_scripts');
 }
 
+function tekafiles_history_menu() {
+    $suffix = add_submenu_page(
+        'tekafiles.php', 'Reporte de actividad', 'Reporte de actividad', 'manage_tekafiles', 'tekafiles_history.php', 'tekafiles_history_page');
+    add_action('admin_print_scripts-' . $suffix, 'tekafiles_new_scripts');
+}
+
 function tekafiles_new_scripts() {
   wp_localize_script('tekafiles_new', 'ajax', array('url' => admin_url('admin-ajax.php')));
   wp_enqueue_script('tekafiles_new');
@@ -47,6 +53,24 @@ function tekafiles_new_scripts() {
 
 function tekafiles_page() {
   if (!current_user_can('manage_tekafiles')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+  }
+  require_once TEKAFILES_DIR . '/inc/Files_Table.php';
+  $table = new Files_Table();
+  $table->prepare_items();
+  ?>
+  <div class='wrap'>
+    <h2>Documentos Teka<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
+    <form action='' method='POST'>
+        <?php $table->display(); ?>
+    </form>
+  </div>
+  <?php
+}
+
+function tekafiles_history_page()
+{
+    if (!current_user_can('manage_tekafiles')) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
   }
   require_once TEKAFILES_DIR . '/inc/Files_Table.php';
@@ -410,6 +434,7 @@ add_action('plugins_loaded', 'tekafiles_update_db_check');
 
 add_action('admin_menu', 'tekafiles_menu');
 add_action('admin_menu', 'tekafiles_new_menu');
+add_action('admin_menu', 'tekafiles_history_menu');
 
 add_action('wp_ajax_search_users', 'tekafiles_ajax_search_users');
 add_action('wp_ajax_search_categories', 'tekafiles_ajax_search_categories');
