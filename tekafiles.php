@@ -306,9 +306,10 @@ function tekafiles_admin_post_download_file() {
 
         $table = $wpdb->prefix . "tekadownload";
         $values = array(
-          'tekafile' => $file_id,
-          'user' => $user_id,
-          'time' => date('Y-m-d H:i:s')
+            'tekafile'  => $file_id,
+            'user'      => $user_id,
+            'time'      => date('Y-m-d H:i:s'),
+            'ip'        => getIP()
         );
         $wpdb->insert($table, $values);
         
@@ -367,6 +368,34 @@ function extractFileName($name){
     $exp = explode(".", $name);
     unset($exp[count($exp) - 1]);
     return implode(".", $exp);
+}
+
+function getIP()
+{
+    if (isset($_SERVER["HTTP_CLIENT_IP"]))
+    {
+        return $_SERVER["HTTP_CLIENT_IP"];
+    }
+    elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+    {
+        return $_SERVER["HTTP_X_FORWARDED_FOR"];
+    }
+    elseif (isset($_SERVER["HTTP_X_FORWARDED"]))
+    {
+        return $_SERVER["HTTP_X_FORWARDED"];
+    }
+    elseif (isset($_SERVER["HTTP_FORWARDED_FOR"]))
+    {
+        return $_SERVER["HTTP_FORWARDED_FOR"];
+    }
+    elseif (isset($_SERVER["HTTP_FORWARDED"]))
+    {
+        return $_SERVER["HTTP_FORWARDED"];
+    }
+    else
+    {
+        return $_SERVER["REMOTE_ADDR"];
+    }
 }
 
 function dump($var){
