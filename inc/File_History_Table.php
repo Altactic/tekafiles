@@ -7,17 +7,17 @@ class Files_History_Table extends WP_List_Table{
     
     function get_columns(){
 		return array(
-            'display_name' => 'Usuario',
+            'user'  => 'Usuario',
 			'title' => 'Último documento descargado',
-			'time' => 'Fecha de descarga',
-			'ip' => 'IP'
+			'time'  => 'Fecha de descarga',
+			'ip'    => 'IP'
         );
 	}
     
     function get_sortable_columns(){
 		return array(
-			'display_name' => 'display_name',
-			'time' => 'time'
+			'user'  => 'user',
+			'time'  => 'time'
         );
 	}
     
@@ -31,7 +31,7 @@ class Files_History_Table extends WP_List_Table{
         
         $query = '  
             SELECT 
-                u.display_name,
+                u.display_name AS user,
                 f.title,
                 d.time,
                 d.ip
@@ -55,8 +55,8 @@ class Files_History_Table extends WP_List_Table{
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
         
-        if ($_GET['orderby'] === 'd'){
-            $orderby = 'display_name';
+        if ($_GET['orderby'] === 'u'){
+            $orderby = 'user';
         }
         if ($_GET['orderby'] === 't'){
             $orderby = 'time';
