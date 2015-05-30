@@ -68,8 +68,7 @@ function tekafiles_page() {
   <?php
 }
 
-function tekafiles_history_page()
-{
+function tekafiles_history_page(){
     if (!current_user_can('manage_tekafiles')) {
         wp_die(__('You do not have sufficient permissions to access this page.'));
     }
@@ -82,7 +81,7 @@ function tekafiles_history_page()
     <div class='wrap'>
         <h2>Reporte de actividad</h2>
         <form action='' method='POST'>
-            
+            <?php $table->display(); ?>
         </form>
     </div>
     <?php
