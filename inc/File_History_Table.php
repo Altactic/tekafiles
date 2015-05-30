@@ -1,6 +1,6 @@
 <?php
 
-class Files_Table extends WP_List_Table{
+class Files_History_Table extends WP_List_Table{
     function __construct(){
 		parent::__construct();
 	}
@@ -25,22 +25,23 @@ class Files_Table extends WP_List_Table{
         //if ($this->current_action()) $this->process_bulk_action();
 		global $wpdb;
         
-        $query = " 
+        $query = '  
             SELECT 
                 u.display_name,
                 f.title,
                 d.time,
                 d.ip
             FROM 
-                '. $wpdb->prefix .'_users u
-                LEFT JOIN '. $wpdb->prefix .'_tekadownload d ON d.user = u.ID
-                LEFT JOIN '. $wpdb->prefix .'_tekafile f ON d.tekafile = f.ID
-            WHERE 
-                (d.ID IN (SELECT MAX(td.id) FROM '. $wpdb->prefix .'_tekadownload td GROUP BY td.user))
+                '. $wpdb->prefix .'users u
+                LEFT JOIN '. $wpdb->prefix .'tekadownload d ON d.user = u.ID
+                LEFT JOIN '. $wpdb->prefix .'tekafile f ON d.tekafile = f.ID
+            WHERE(
+                    d.ID IN (SELECT MAX(td.id) FROM '. $wpdb->prefix .'tekadownload td GROUP BY td.user)
                 OR
-                d.ID IS NULL)
+                    d.ID IS NULL
+            )
             GROUP BY u.ID  
-        ";
+        ';
         
         $query_count = 'SELECT COUNT(*) AS c FROM '. $wpdb->prefix .'users';
         
@@ -80,7 +81,7 @@ class Files_Table extends WP_List_Table{
        	}
         
         $this->items = $wpdb->get_results($query);
-        
+                
         $this->set_pagination_args( array(
             'total_items' => $total_items,
             'per_page'    => $per_page,
