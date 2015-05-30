@@ -104,11 +104,17 @@ function tekafiles_history_detail_page(){
     '; 
     $file = $wpdb->get_row($query);
     
+    require_once TEKAFILES_DIR . '/inc/File_History_Detail_Table.php';
+    $table = new Files_History_Detail_Table();
+    $table->prepare_items();
+    
+    
     ?>
     <div class='wrap'>
         <h2>Historial de descargas <?php echo $file->name; ?></h2>
+        <a href='<?php echo admin_url("admin.php?page=tekafiles_history.php"); ?>'>Volver al reporte de actividad</a>
         <form action='' method='POST'>
-            
+            <?php $table->display(); ?>
         </form>
     </div>
     <?php
