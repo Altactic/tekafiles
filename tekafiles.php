@@ -94,9 +94,19 @@ function tekafiles_history_detail_page(){
     if (!current_user_can('manage_tekafiles')) {
         wp_die(__('You do not have sufficient permissions to access this page.'));
     }
+    global $wpdb;
+    $id = $_GET['u'];
+    
+    $query = ' 
+        SELECT display_name AS name
+        FROM '. $wpdb->prefix .'users 
+        WHERE ID = ' . $id . ' 
+    '; 
+    $file = $wpdb->get_row($query);
+    
     ?>
     <div class='wrap'>
-        <h2>Historial de descargas</h2>
+        <h2>Historial de descargas <?php echo $file->name; ?></h2>
         <form action='' method='POST'>
             
         </form>

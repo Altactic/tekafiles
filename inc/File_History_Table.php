@@ -28,7 +28,7 @@ class Files_History_Table extends WP_List_Table{
     function column_user($item){
         $detail = admin_url("admin.php?page=tekafiles_history_detail.php&u=" . $item->id);
         $actions = array(
-			'detail' => "<a href='$detail'>Detalle</a>"
+			'detail' => "<a href='$detail'>Ver historial de descargas</a>"
         );
         $rowactions = $this->row_actions($actions);
 		return "$item->user $rowactions";
