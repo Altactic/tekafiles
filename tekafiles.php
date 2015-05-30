@@ -456,12 +456,6 @@ function getIP()
     }
 }
 
-function dump($var){
-    echo "<pre>";
-    print_r($var);
-    echo "</pre>";
-}
-
 register_activation_hook(__FILE__, 'tekafiles_activate');
 register_deactivation_hook(__FILE__, 'tekafiles_deactivate');
 add_action('plugins_loaded', 'tekafiles_update_db_check');
