@@ -8,7 +8,7 @@ class Files_History_Table extends WP_List_Table{
     function get_columns(){
 		return array(
             'display_name' => 'Usuario',
-			'title' => 'Archivo',
+			'title' => 'Último documento descargado',
 			'time' => 'Fecha de descarga',
 			'ip' => 'IP'
         );

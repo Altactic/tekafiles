@@ -435,8 +435,8 @@ register_deactivation_hook(__FILE__, 'tekafiles_deactivate');
 add_action('plugins_loaded', 'tekafiles_update_db_check');
 
 add_action('admin_menu', 'tekafiles_menu');
-add_action('admin_menu', 'tekafiles_new_menu');
 add_action('admin_menu', 'tekafiles_history_menu');
+add_action('admin_menu', 'tekafiles_new_menu');
 
 add_action('wp_ajax_search_users', 'tekafiles_ajax_search_users');
 add_action('wp_ajax_search_categories', 'tekafiles_ajax_search_categories');
