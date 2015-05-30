@@ -21,9 +21,18 @@ class Files_History_Table extends WP_List_Table{
         );
 	}
     
-    function column_default ($item, $column_name) {
+    function column_default($item, $column_name){
 		return $item->$column_name;
 	}
+    
+    function column_user($item){
+        $detail = admin_url("admin.php?page=tekafiles_history_detail.php&u=" . $item->id);
+        $actions = array(
+			'detail' => "<a href='$detail'>Detalle</a>"
+        );
+        $rowactions = $this->row_actions($actions);
+		return "$item->user $rowactions";
+    }
     
     function prepare_items(){
         //if ($this->current_action()) $this->process_bulk_action();
@@ -31,6 +40,7 @@ class Files_History_Table extends WP_List_Table{
         
         $query = '  
             SELECT 
+                u.id,
                 u.display_name AS user,
                 f.title,
                 d.time,
