@@ -74,6 +74,18 @@ function tekafiles_history_page()
         wp_die(__('You do not have sufficient permissions to access this page.'));
     }
     
+    require_once TEKAFILES_DIR . '/inc/File_History_Table.php';
+    $table = new Files_History_Table();
+    $table->prepare_items();
+    
+    ?>
+    <div class='wrap'>
+        <h2>Reporte de actividad</h2>
+        <form action='' method='POST'>
+            
+        </form>
+    </div>
+    <?php
     
 }
 
