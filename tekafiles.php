@@ -23,14 +23,16 @@ function tekafiles_admin_init() {
 }
 
 function tekafiles_menu() {
-  add_menu_page(
-      'Libreria Teka', 'Libreria Teka', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page', 'dashicons-clipboard');
-  add_submenu_page(
-      'tekafiles.php', 'Documentos', 'Documentos', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page');
-  add_submenu_page(
-      NULL, 'Reporte', 'Reporte', 'manage_tekafiles', 'tekafiles_report.php', 'tekafiles_report_page');
-  add_submenu_page(
-      NULL, 'Descargas', 'Descargas', 'manage_tekafiles', 'tekafiles_downloads.php', 'tekafiles_downloads_page');
+    add_menu_page(
+        'Libreria Teka', 'Libreria Teka', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page', 'dashicons-clipboard');
+    add_submenu_page(
+        'tekafiles.php', 'Documentos', 'Documentos', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page');
+    add_submenu_page(
+        NULL, 'Reporte', 'Reporte', 'manage_tekafiles', 'tekafiles_report.php', 'tekafiles_report_page');
+    add_submenu_page(
+        NULL, 'Descargas', 'Descargas', 'manage_tekafiles', 'tekafiles_downloads.php', 'tekafiles_downloads_page');
+    add_submenu_page(
+        NULL, 'Historial', 'Historial de descargas', 'manage_tekafiles', 'tekafiles_history_detail.php', 'tekafiles_history_detail_page');
 }
 
 function tekafiles_new_menu() {
@@ -86,6 +88,20 @@ function tekafiles_history_page(){
     </div>
     <?php
     
+}
+
+function tekafiles_history_detail_page(){
+    if (!current_user_can('manage_tekafiles')) {
+        wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+    ?>
+    <div class='wrap'>
+        <h2>Historial de descargas</h2>
+        <form action='' method='POST'>
+            
+        </form>
+    </div>
+    <?php
 }
 
 function tekafiles_new_page() {
