@@ -15,15 +15,31 @@ class Tekafiles_Widget extends WP_Widget {
     extract($args);
     global $wpdb;
     $user_id = get_current_user_id();
-    $categories = $wpdb->get_col("SELECT t.category
-			FROM {$wpdb->prefix}tekafile_user as tu
-			JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile=t.ID
-			WHERE tu.user=$user_id AND t.enabled>0
-			GROUP BY t.category");
-    $files = $wpdb->get_results("SELECT t.title as title, t.category as category, t.file as file, t.ID as ID, t.description as description, tu.locked as locked
-			FROM {$wpdb->prefix}tekafile_user as tu
-			JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile=t.ID
-			WHERE tu.user=$user_id AND t.enabled>0");
+    
+    // Obtener listado de documentos
+    $files = $wpdb->get_results("
+        SELECT 
+            t.title as title, 
+            t.category as category, 
+            t.file as file, 
+            t.ID as ID, 
+            t.description as description, 
+            tu.locked as locked
+        FROM {$wpdb->prefix}tekafile_user as tu
+        JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile = t.ID
+		WHERE 
+            tu.user = $user_id
+            AND t.enabled > 0 
+        ORDER BY t.ID DESC
+    ");
+        
+    // Extraer categorias del listado obtenido
+    $categories = array();
+    foreach($files as $f){
+        $categories[] = $f->category;
+    }
+    $categories = array_unique($categories);
+        
     $title = apply_filters('widget_title', $instance['title']);
     echo $before_widget;
     ?>
