@@ -12,6 +12,7 @@ class Tekafiles_Widget extends WP_Widget {
         }
         wp_enqueue_script('tekafiles_widget', TEKAFILES_URL . '/js/widget.js', array('jquery'));
         wp_enqueue_style('tekafiles_widget', TEKAFILES_URL . '/css/widget.css');
+        
         extract($args);
         global $wpdb;
         $user_id = get_current_user_id();
@@ -48,7 +49,12 @@ class Tekafiles_Widget extends WP_Widget {
         <?php endif; ?>
 
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="<?php echo TEKAFILES_URL . '/css/jquery.modal.css' ?>">
+        <link rel="stylesheet" href="<?php echo TEKAFILES_URL . '/css/jquery.modal.theme-xenon.css' ?>">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="<?php echo TEKAFILES_URL . '/js/jquery.modal.min.js' ?>"></script>
+        
 
         <div id="accordion">
         <?php foreach ($categories as $category): ?>
@@ -72,6 +78,8 @@ class Tekafiles_Widget extends WP_Widget {
         <?php endforeach; ?>
         </div>
 
+        
+        
         <?php
         echo $after_widget;
     }
