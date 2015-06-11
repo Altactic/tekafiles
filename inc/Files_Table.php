@@ -132,7 +132,7 @@ class Files_Table extends WP_List_Table {
             $query .= ' ORDER BY '.$orderby.' '.$order;
         }
         else{
-            $query .= ' ORDER BY ID DESC';
+            $query .= ' ORDER BY f.category, f.title';
         }
 
        	$count_result = $wpdb->get_results($query_count);
