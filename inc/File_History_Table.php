@@ -7,17 +7,19 @@ class Files_History_Table extends WP_List_Table{
     
     function get_columns(){
 		return array(
-            'user'  => 'Usuario',
-			'title' => 'Último documento descargado',
-			'time'  => 'Fecha de descarga',
-			'ip'    => 'IP'
+            'user'      => 'Usuario',
+			'download'  => 'Última descarga',
+			'file'      => 'Documento descargado',
+            'login'     => "Último ingreso"
         );
 	}
     
     function get_sortable_columns(){
 		return array(
-			'user'  => 'user',
-			'time'  => 'time'
+			'user'      => 'user',
+			'download'  => 'download',
+			'file'      => 'file',
+			'login'     => 'login'
         );
 	}
     
@@ -42,18 +44,26 @@ class Files_History_Table extends WP_List_Table{
             SELECT 
                 u.id,
                 u.display_name AS user,
-                f.title,
-                d.time,
-                d.ip
+                f.title AS file,
+                CONCAT(d.time, " - ", d.ip) AS download,
+                CONCAT(l.date, " - ", l.ip) AS login
             FROM 
                 '. $wpdb->prefix .'users u
                 LEFT JOIN '. $wpdb->prefix .'tekadownload d ON d.user = u.ID
                 LEFT JOIN '. $wpdb->prefix .'tekafile f ON d.tekafile = f.ID
-            WHERE(
-                    d.ID IN (SELECT MAX(td.id) FROM '. $wpdb->prefix .'tekadownload td GROUP BY td.user)
-                OR
+                LEFT JOIN '. $wpdb->prefix .'tekafile_log l ON u.ID = l.user
+            WHERE
+                ( 
+                    d.ID IN (SELECT MAX(td.ID) FROM '. $wpdb->prefix .'tekadownload td GROUP BY td.user)
+                    OR
                     d.ID IS NULL
-            )
+                )
+                AND
+                (
+                    l.ID IN (SELECT MAX(tl.ID) FROM '. $wpdb->prefix .'tekafile_log tl GROUP BY tl.user)
+                    OR
+                    l.ID IS NULL
+                )
             GROUP BY u.ID  
         ';
         
@@ -68,8 +78,14 @@ class Files_History_Table extends WP_List_Table{
         if ($_GET['orderby'] === 'u'){
             $orderby = 'user';
         }
-        if ($_GET['orderby'] === 't'){
-            $orderby = 'time';
+        if ($_GET['orderby'] === 'd'){
+            $orderby = 'd.time';
+        }
+        if ($_GET['orderby'] === 'f'){
+            $orderby = 'f.title';
+        }
+        if ($_GET['orderby'] === 'l'){
+            $orderby = 'l.date';
         }
         if (isset($_GET['order'])){
             $order = mysql_real_escape_string($_GET["order"]);
