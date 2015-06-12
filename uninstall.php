@@ -14,3 +14,4 @@ global $wpdb;
 $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tekafile");
 $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tekadownload");
 $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tekafile_user");
+$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tekafile_log");
