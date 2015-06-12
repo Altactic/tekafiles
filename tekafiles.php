@@ -393,18 +393,29 @@ function tekafiles_register_widgets() {
 }
 
 function tekafiles_login_redirect($redirect_to) {
-  global $user;
-  if (isset($user->roles) && is_array($user->roles)) {
-    if (in_array('subscriber', $user->roles)) {
-      return site_url('/downloads');
+    global $user;
+    if (isset($user->roles) && is_array($user->roles)) {
+        if (in_array('subscriber', $user->roles)) {
+            global $wpdb;
+            $user_id = $user->id;
+            
+            $table = $wpdb->prefix . "tekafile_log";
+            $values = array(
+                'user'      => $user_id,
+                'date'      => date('Y-m-d H:i:s'),
+                'ip'        => getIP()
+            );
+            $wpdb->insert($table, $values);
+            
+            return site_url('/downloads');
+        }
+        else {
+            return $redirect_to;
+        }
     }
     else {
-      return $redirect_to;
+        return $redirect_to;
     }
-  }
-  else {
-    return $redirect_to;
-  }
 }
 
 function reArrayFiles(&$file_post) {
