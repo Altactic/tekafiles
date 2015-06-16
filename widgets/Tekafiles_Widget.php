@@ -31,7 +31,7 @@ class Tekafiles_Widget extends WP_Widget {
             WHERE 
                 tu.user = $user_id
                 AND t.enabled > 0 
-            ORDER BY t.category, t.title
+            ORDER BY t.category, CAST( t.title AS UNSIGNED ), t.title
         ");
 
         // Extraer categorias del listado obtenido
