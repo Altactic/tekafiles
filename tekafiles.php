@@ -33,6 +33,8 @@ function tekafiles_menu() {
         NULL, 'Descargas', 'Descargas', 'manage_tekafiles', 'tekafiles_downloads.php', 'tekafiles_downloads_page');
     add_submenu_page(
         NULL, 'Historial', 'Historial de descargas', 'manage_tekafiles', 'tekafiles_history_detail.php', 'tekafiles_history_detail_page');
+    add_submenu_page(
+        NULL, 'Ingresos', 'Historial de ingresos', 'manage_tekafiles', 'tekafiles_history_log.php', 'tekafiles_history_log_page');
 }
 
 function tekafiles_new_menu() {
@@ -102,7 +104,7 @@ function tekafiles_history_detail_page(){
         FROM '. $wpdb->prefix .'users 
         WHERE ID = ' . $id . ' 
     '; 
-    $file = $wpdb->get_row($query);
+    $user = $wpdb->get_row($query);
     
     require_once TEKAFILES_DIR . '/inc/File_History_Detail_Table.php';
     $table = new Files_History_Detail_Table();
@@ -111,10 +113,37 @@ function tekafiles_history_detail_page(){
     
     ?>
     <div class='wrap'>
-        <h2>Historial de descargas <?php echo $file->name; ?></h2>
-        <a href='<?php echo admin_url("admin.php?page=tekafiles_history.php"); ?>'>Volver al reporte de actividad</a>
+        <h2>Historial de descargas <?php echo $user->name; ?></h2>
+        <a href='<?php echo admin_url("admin.php?page=tekafiles_history.php"); ?>'>Volver al reporte de actividad</a> | 
+        <a href='<?php echo admin_url("admin.php?page=tekafiles_history_log.php&u=".$id); ?>'>Ir al historial de ingresos al sistema</a>
         <form action='' method='POST'>
             <?php $table->display(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+function tekafiles_history_log_page(){
+    if (!current_user_can('manage_tekafiles')) {
+        wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+    global $wpdb;
+    $id = $_GET['u'];
+    
+    $query = ' 
+        SELECT display_name AS name
+        FROM '. $wpdb->prefix .'users 
+        WHERE ID = ' . $id . ' 
+    '; 
+    $user = $wpdb->get_row($query);
+    
+    ?>
+    <div class='wrap'>
+        <h2>Historial de ingresos al sistema <?php echo $user->name; ?></h2>
+        <a href='<?php echo admin_url("admin.php?page=tekafiles_history.php"); ?>'>Volver al reporte de actividad</a> | 
+        <a href='<?php echo admin_url("admin.php?page=tekafiles_history_detail.php&u=".$id); ?>'>Ir al historial de descargas</a>
+        <form action='' method='POST'>
+            
         </form>
     </div>
     <?php
