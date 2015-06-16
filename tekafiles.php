@@ -137,13 +137,17 @@ function tekafiles_history_log_page(){
     '; 
     $user = $wpdb->get_row($query);
     
+    require_once TEKAFILES_DIR . '/inc/File_History_Log_Table.php';
+    $table = new Files_History_Log_Table();
+    $table->prepare_items();
+    
     ?>
     <div class='wrap'>
         <h2>Historial de ingresos al sistema <?php echo $user->name; ?></h2>
         <a href='<?php echo admin_url("admin.php?page=tekafiles_history.php"); ?>'>Volver al reporte de actividad</a> | 
         <a href='<?php echo admin_url("admin.php?page=tekafiles_history_detail.php&u=".$id); ?>'>Ir al historial de descargas</a>
         <form action='' method='POST'>
-            
+            <?php $table->display(); ?>
         </form>
     </div>
     <?php
