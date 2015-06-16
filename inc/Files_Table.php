@@ -124,15 +124,16 @@ class Files_Table extends WP_List_Table {
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
 
-		if ($_GET['orderby'] === 'c') $orderby = 'category';
-		if ($_GET['orderby'] === 't') $orderby = 'title';
-		if ($_GET['orderby'] === 'u') $orderby = 'users';
+        $order = "";
 		if (isset($_GET['order'])) $order = mysql_real_escape_string($_GET["order"]);
+		if ($_GET['orderby'] === 'c') $orderby = 'category '. $order;
+		if ($_GET['orderby'] === 't') $orderby = 'CAST( f.title AS UNSIGNED ) '.$order.', f.title '.$order;
+		if ($_GET['orderby'] === 'u') $orderby = 'users '. $order;
        	if (isset($orderby) && isset($order)){
-            $query .= ' ORDER BY '.$orderby.' '.$order;
+            $query .= ' ORDER BY '.$orderby;
         }
         else{
-            $query .= ' ORDER BY f.category, f.title';
+            $query .= ' ORDER BY f.category, CAST( f.title AS UNSIGNED ), f.title';
         }
 
        	$count_result = $wpdb->get_results($query_count);
