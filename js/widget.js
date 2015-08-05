@@ -9,7 +9,7 @@ jQuery(document).ready(function($){
         },
         es: {
             title:          "Advertencia",
-            description:    "Se descargará la información confidencial. Sólo puede descargar este archivo una vez. Si tiene que descargarlo de nuevo, por favor póngase en contacto con tekapef@tekacap.com",
+            description:    "Se descargará información confidencial. Sólo puede descargar este archivo una vez. Si tiene que descargarlo de nuevo, por favor póngase en contacto con tekapef@tekacap.com",
             accept:         "Aceptar",
             cancel:         "Cancelar"
         }
@@ -26,7 +26,8 @@ jQuery(document).ready(function($){
         e.preventDefault();
         var $link = $(this);
         var locked = $link.hasClass('locked');
-        var lang = "es";
+        // Obtener lenguaje de las cookies
+        var lang = document.cookie.replace(/(?:(?:^|.*;\s*)_icl_current_language\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "en";
         
         if(locked){
             return false;
