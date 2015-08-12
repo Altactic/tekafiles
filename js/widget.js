@@ -9,7 +9,7 @@ jQuery(document).ready(function($){
         },
         es: {
             title:          "Advertencia",
-            description:    "Se descargará información confidencial. Sólo puede descargar este archivo una vez. Si tiene que descargarlo de nuevo, por favor póngase en contacto con tekapef@tekacap.com",
+            description:    "Está a punto de descargar información confidencial. Sólo podrá descargar este archivo una (1) vez. Si necesita descargarlo de nuevo, por favor contacte a tekapef@tekacap.com",
             accept:         "Aceptar",
             cancel:         "Cancelar"
         }
