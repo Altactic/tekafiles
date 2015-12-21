@@ -1,5 +1,20 @@
 jQuery(document).ready(function($){
     
+    var trans = {
+        en: {
+            title:          "Warning",
+            description:    "You are about to download confidential information. You may only download this file once. If you need to download it again, please contact tekapef@tekacap.com",
+            accept:         "Accept",
+            cancel:         "Cancel"
+        },
+        es: {
+            title:          "Advertencia",
+            description:    "Está a punto de descargar información confidencial. Sólo podrá descargar este archivo una (1) vez. Si necesita descargarlo de nuevo, por favor contacte a tekapef@tekacap.com",
+            accept:         "Aceptar",
+            cancel:         "Cancelar"
+        }
+    };    
+    
     $("#accordion").accordion({
         active: false,
         collapsible: true,
@@ -11,22 +26,22 @@ jQuery(document).ready(function($){
         e.preventDefault();
         var $link = $(this);
         var locked = $link.hasClass('locked');
-
+        // Obtener lenguaje de las cookies
+        var lang = document.cookie.replace(/(?:(?:^|.*;\s*)_icl_current_language\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "en";
+        
         if(locked){
             return false;
         }
         else{
             var url = $link.attr("href");
 
-            var text = "You are about to download confidential information. You may only download this file once. If you need to download it again, please contact tekapef@tekacap.com";
-            
             modal({
-				type: 'confirm',
-				title: 'Warning',
-				text: text,
+				type:   'confirm',
+				title:  trans[lang]["title"],
+				text:   trans[lang]["description"],
                 buttonText: {
-					yes: 'Accept',
-					cancel: 'Cancel'
+					yes:    trans[lang]["accept"],
+					cancel: trans[lang]["cancel"]
 				},
 				callback: function(result) {
 					if(result){
