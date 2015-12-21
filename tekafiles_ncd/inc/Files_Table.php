@@ -110,8 +110,8 @@ class Files_Table extends WP_List_Table {
                 f.*,
                 CASE f.public WHEN 1 THEN "ALL" ELSE GROUP_CONCAT(" ", u.display_name) END AS users
             FROM '. $wpdb->prefix .'tekafile f
-            JOIN '. $wpdb->prefix .'tekafile_user fu ON f.ID = fu.tekafile
-            JOIN '. $wpdb->prefix .'users u ON fu.user = u.ID
+            LEFT JOIN '. $wpdb->prefix .'tekafile_user fu ON f.ID = fu.tekafile
+            LEFT JOIN '. $wpdb->prefix .'users u ON fu.user = u.ID
             GROUP BY f.ID
         ';
         
