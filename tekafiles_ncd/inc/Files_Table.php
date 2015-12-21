@@ -15,7 +15,8 @@ class Files_Table extends WP_List_Table {
 			'title' => 'Título',
 			'category' => 'Categoría',
 			'enabled' => 'Habilitado',
-			'users' => 'Permisos');
+			//'users' => 'Permisos'
+        );
 	}
 
 	function get_sortable_columns () {
@@ -35,10 +36,8 @@ class Files_Table extends WP_List_Table {
 
 	function column_title($item) {
 		$edit = admin_url("admin.php?page=tekafiles_new.php&e=$item->ID");
-		$report = admin_url("admin.php?page=tekafiles_report.php&t=$item->ID");
 		$actions = array(
-			'edit' => "<a href='$edit'>Editar</a>",
-			'report' => "<a href='$report'>Permisos</a>");
+			'edit' => "<a href='$edit'>Editar</a>"); 
 		$rowactions = $this->row_actions($actions);
 		return "$item->title $rowactions";
 	}

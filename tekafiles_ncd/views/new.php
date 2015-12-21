@@ -80,39 +80,6 @@
 				</td>
 			</tr>
 
-			<tr>
-				<th scope='row'>
-					<label for='public'>Todos</label>
-				</th>
-				<td>
-					<input id='public'
-						type='checkbox'
-						name='public'
-						<?php if ($file->public): ?>checked<?php endif; ?> />
-				</td>
-			</tr>
-
-			<tr id='users-row'
-				<?php if($file->public) echo "style='display:none;'"; ?> >
-				<th scope='row'>
-					<label for='users'>Usuarios</label>
-				</th>
-				<td>
-					<select id="users"
-						name="users[]"
-						multiple="multiple"
-						size="10"
-						required>
-						<?php foreach ($users as $user) : ?>
-						<option
-							value="<?php echo $user->ID; ?>"
-							label="<?php echo $user->display_name; ?>"
-							<?php if(isset($file_users[$user->ID])) echo "selected"; ?> />
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-
 		</table>
 		<div>
 			<input type='submit' value='Enviar' class='button button-primary' name='submit' id='submit' />

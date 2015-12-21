@@ -157,9 +157,6 @@ function tekafiles_new_page() {
   if (isset($_POST['submit'])) {
     tekafiles_process_new();
   }
-  $users = get_users(array(
-    'role' => 'subscriber',
-    'fields' => array('ID', 'display_name')));
   if (isset($_GET['e'])) {
     global $wpdb;
     $ID = $_GET['e'];
@@ -239,18 +236,12 @@ function tekafiles_process_new() {
 
   $category = strtolower($_POST['category']);
   $date = date('Y-m-d');
-  if (isset($_POST['public']))
-    $public = 1;
-  else
-    $public = 0;
+  $public = 1;
   if (isset($_POST['enabled']))
     $enabled = 1;
   else
     $enabled = 0;
 
-  $all = get_users(array(
-    'role' => 'subscriber',
-    'fields' => 'ID'));
   $values = array(
     'title' => $_POST['title'],
     'description' => $_POST['description'],
@@ -268,38 +259,10 @@ function tekafiles_process_new() {
     $wpdb->update(
         $wpdb->prefix . "tekafile", $values, array(
       'ID' => $file_id));
-    $new = $_POST['users'];
-    if ($public) {
-      $insert = array_diff($all, $old);
-    }
-    else {
-      $delete = array_diff($old, $new);
-      $delete = join(',', $delete);
-      $query = "DELETE FROM {$wpdb->prefix}tekafile_user
-        WHERE user IN ($delete) AND tekafile=$file_id";
-      $wpdb->query($query);
-      $insert = array_diff($new, $old);
-    }
-
-    $values = "";
-    foreach ($insert as $ID) {
-      $values .= "($file_id, $ID),";
-    }
-    $values = substr($values, 0, strlen($values) - 1);
-    $query = "INSERT INTO {$wpdb->prefix}tekafile_user
-        (tekafile, user)
-        VALUES $values";
-    $wpdb->query($query);
   }
   else {
     $files = reArrayFiles($_FILES['files']);
     $overrides = array('test_form' => false);
-    
-    $user_values = "";
-    if ($public)
-        $user_ids = $all;
-    else
-        $user_ids = $_POST['users'];
     
     foreach($files as $upload){
         $file = wp_handle_upload($upload, $overrides);
@@ -310,18 +273,7 @@ function tekafiles_process_new() {
         $wpdb->insert($wpdb->prefix . 'tekafile', $values);
         
         $file_id = $wpdb->insert_id;
-        
-        foreach ($user_ids as $user_id) {
-            $user_values .= "($file_id, $user_id),";
-        }
-    }
-    
-    $user_values = substr($user_values, 0, strlen($user_values) - 1);
-    $query = "INSERT INTO {$wpdb->prefix}tekafile_user
-        (tekafile, user)
-        VALUES $user_values";
-
-    $wpdb->query($query);
+    } 
   }
 
   wp_redirect(admin_url('/admin.php?page=tekafiles.php'));
