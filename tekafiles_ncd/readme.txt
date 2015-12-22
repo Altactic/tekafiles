@@ -1,1 +1,6 @@
-PLUGIN TEKAFILES SIN CONTROL DE DESCARGA
+- Quitar control o restricción de descar única (Generar reporte pero sin control unica descarga)
+- En formulario de crear|editar documento QUITAR campos que indicar las personas que tienen acceso
+- Usuario con acceso a todos los archivos 
+- Documentos quedan públicos 
+- Listado doc teka: quitar acceso a "permisos"
+- Cambiar nombre de plugin que quede solo "documentos", en posible en totalidad 
