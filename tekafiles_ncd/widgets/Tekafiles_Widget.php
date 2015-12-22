@@ -3,7 +3,7 @@
 class Tekafiles_Widget extends WP_Widget {
 
   public function __construct() {
-    parent :: __construct(false, 'Librería TEKA');
+    parent :: __construct(false, 'Documentos');
   }
 
     public function widget($args, $instance) {

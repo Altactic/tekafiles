@@ -1,11 +1,9 @@
 <?php
 /**
- * Plugin Name: Teka Files
- * Plugin URI: http://github.com/foxrock/tekafiles
- * Description: Teka file administrator.
+ * Plugin Name: Files
+ * Description: File administrator.
  * Version: 1.0
  * Author: Andres Londono
- * Author URI: http://www.foxrock.co
  * License: GPL2
  */
 define('TEKAFILES_PREFIX', 'TEKAFILES_');
@@ -24,7 +22,7 @@ function tekafiles_admin_init() {
 
 function tekafiles_menu() {
     add_menu_page(
-        'Libreria Teka', 'Libreria Teka', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page', 'dashicons-clipboard');
+        'Libreria Teka', 'Documentos', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page', 'dashicons-clipboard');
     add_submenu_page(
         'tekafiles.php', 'Documentos', 'Documentos', 'manage_tekafiles', 'tekafiles.php', 'tekafiles_page');
     add_submenu_page(
@@ -64,7 +62,7 @@ function tekafiles_page() {
   $table->prepare_items();
   ?>
   <div class='wrap'>
-    <h2>Documentos Teka<a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
+    <h2>Documentos <a class='add-new-h2' href='<?php echo admin_url('admin.php?page=tekafiles_new.php'); ?>'>Nuevo</a></h2>
     <form action='' method='POST'>
         <?php $table->display(); ?>
     </form>
