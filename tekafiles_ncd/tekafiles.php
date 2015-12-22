@@ -316,54 +316,42 @@ function tekafiles_ajax_validate_user() {
   exit;
 }
 
-function tekafiles_admin_post_download_file() {
-  global $wpdb;
-  $user_id = get_current_user_id();
-  $file_id = $_GET['t'];
-  $query = "SELECT *
-    FROM {$wpdb->prefix}tekafile_user
-    WHERE user=$user_id AND tekafile=$file_id";
-  $access = $wpdb->get_row($query);
-  if ($access && !$access->locked) {
-    $file = $wpdb->get_row("SELECT *
-      FROM {$wpdb->prefix}tekafile
-      WHERE ID=$file_id");
-    if ($file->enabled) {
-      $path = $file->file;
-      if (is_file($path)) {
-        $ext = '.' . pathinfo($path, PATHINFO_EXTENSION);
-        $size = filesize($path);
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $path);
+function tekafiles_admin_post_download_file() { 
+    global $wpdb;
+    $user_id = get_current_user_id();
+    $file_id = $_GET['t'];
+    $file = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}tekafile WHERE ID=$file_id"); 
+    if ($file->enabled) { 
+        $path = $file->file; 
+        if (is_file($path)) {
+            $ext = '.' . pathinfo($path, PATHINFO_EXTENSION);
+            $size = filesize($path);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $path);
 
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Cache-Control: private", false);
-        header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename=\"" . $file->title . $ext . "\";");
-        header("Content-Transfer-Encoding: binary");
-        header("Content-Length: " . $size);
-        header("Content-type: application/octet-stream");
-        readfile($path);
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: private", false);
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=\"" . $file->title . $ext . "\";");
+            header("Content-Transfer-Encoding: binary");
+            header("Content-Length: " . $size);
+            header("Content-type: application/octet-stream");
+            readfile($path);
 
-        $table = $wpdb->prefix . "tekadownload";
-        $values = array(
-            'tekafile'  => $file_id,
-            'user'      => $user_id,
-            'time'      => date('Y-m-d H:i:s'),
-            'ip'        => getIP()
-        );
-        $wpdb->insert($table, $values);
-        
-        $wpdb->query("UPDATE {$wpdb->prefix}tekafile_user
-          SET locked=1
-          WHERE tekafile=$file_id AND user=$user_id");
-        exit;
-      }
+            $table = $wpdb->prefix . "tekadownload";
+            $values = array(
+                'tekafile'  => $file_id,
+                'user'      => $user_id,
+                'time'      => date('Y-m-d H:i:s'),
+                'ip'        => getIP()
+            );
+            $wpdb->insert($table, $values);
+            exit;
+        }
     }
-  }
-  exit;
+    exit;
 }
 
 function tekafiles_upload_dir_filter($dir) {

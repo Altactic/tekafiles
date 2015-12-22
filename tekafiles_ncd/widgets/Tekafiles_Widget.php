@@ -15,7 +15,7 @@ class Tekafiles_Widget extends WP_Widget {
         
         extract($args);
         global $wpdb;
-        $user_id = get_current_user_id();
+        // $user_id = get_current_user_id(); 
 
         // Obtener listado de documentos
         $files = $wpdb->get_results("
@@ -24,13 +24,10 @@ class Tekafiles_Widget extends WP_Widget {
                 t.category as category, 
                 t.file as file, 
                 t.ID as ID, 
-                t.description as description, 
-                tu.locked as locked
-            FROM {$wpdb->prefix}tekafile_user as tu
-            JOIN {$wpdb->prefix}tekafile as t ON tu.tekafile = t.ID
+                t.description as description 
+            FROM {$wpdb->prefix}tekafile as t 
             WHERE 
-                tu.user = $user_id
-                AND t.enabled > 0 
+                t.enabled > 0 
             ORDER BY t.category, CAST( t.title AS UNSIGNED ), t.title
         ");
 
@@ -63,13 +60,9 @@ class Tekafiles_Widget extends WP_Widget {
                 <ul class='bullet_arrow2 imglist'>
                     <?php foreach ($files as $file): ?>
                         <?php if ($file->category === $category): ?>
-                            <li>
-                                <?php if ($file->locked): ?>
-                                    <a href="#" class='lnk-download locked'><?php echo $file->title; ?></a>
-                                <?php else: ?>
-                                    <a class="lnk-download" href="<?php echo admin_url("admin-post.php?action=download&t=$file->ID"); ?>"><?php echo $file->title; ?></a>
-                                <?php endif; ?>
-                                <?php echo $file->description; ?>
+                            <li> 
+                                <a class="lnk-download" href="<?php echo admin_url("admin-post.php?action=download&t=$file->ID"); ?>"><?php echo $file->title; ?></a>
+                                <?php echo $file->description; ?> 
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
