@@ -3,7 +3,7 @@
  * Plugin Name: Files
  * Description: File administrator.
  * Version: 1.0
- * Author: Andres Londono
+ * Author: Altactic 
  * License: GPL2
  */
 define('TEKAFILES_PREFIX', 'TEKAFILES_');
